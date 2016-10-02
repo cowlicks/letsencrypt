@@ -709,6 +709,9 @@ def prepare_and_parse_args(plugins, args, detect_defaults=False):  # pylint: dis
         help="With the register verb, indicates that details associated "
              "with an existing registration, such as the e-mail address, "
              "should be updated, rather than registering a new account.")
+    helpful.add(
+        "register", "--deactivate", action="store_true",
+        help="Irrecvocably deactivate your account")
     helpful.add(None, "-m", "--email", help=config_help("email"))
     helpful.add(
         ["automation", "renew", "certonly", "run"],
