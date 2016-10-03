@@ -119,6 +119,8 @@ common revoke --cert-path "$root/conf/live/le1.wtf/cert.pem"
 common revoke --cert-path "$root/conf/live/le2.wtf/cert.pem" \
        --key-path "$root/conf/live/le2.wtf/privkey.pem"
 
+common register --deactivate
+
 if type nginx;
 then
     . ./certbot-nginx/tests/boulder-integration.sh
