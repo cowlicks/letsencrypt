@@ -1044,32 +1044,33 @@ class CLITest(unittest.TestCase):  # pylint: disable=too-many-public-methods
 
     @mock.patch('certbot.main.display_ops.get_email')
     @mock.patch('certbot.main.zope.component.getUtility')
-    def test_update_registration_with_email(self, mock_utility, mock_email):
+    @mock.patch('certbot.main.client')
+    @mock.patch('certbot.main.account')
+    @mock.patch('certbot.main._determine_account')
+    def test_update_registration_with_email(self, mock_utility, mock_email,
+                                            mocked_client, mocked_account,
+                                            mocked_det):
         email = "user@example.com"
         mock_email.return_value = email
-        with mock.patch('certbot.main.client') as mocked_client:
-            with mock.patch('certbot.main.account') as mocked_account:
-                with mock.patch('certbot.main._determine_account') as mocked_det:
-                    with mock.patch('certbot.main.client') as mocked_client:
-                        mocked_storage = mock.MagicMock()
-                        mocked_account.AccountFileStorage.return_value = mocked_storage
-                        mocked_storage.find_all.return_value = ["an account"]
-                        mocked_det.return_value = (mock.MagicMock(), "foo")
-                        acme_client = mock.MagicMock()
-                        mocked_client.Client.return_value = acme_client
-                        x = self._call_no_clientmock(
-                            ["register", "--update-registration"])
-                        # When registration change succeeds, the return value
-                        # of register() is None
-                        self.assertTrue(x[0] is None)
-                        # and we got supposedly did update the registration from
-                        # the server
-                        self.assertTrue(
-                            acme_client.acme.update_registration.called)
-                        # and we saved the updated registration on disk
-                        self.assertTrue(mocked_storage.save_regr.called)
-                        self.assertTrue(
-                            email in mock_utility().add_message.call_args[0][0])
+        mocked_storage = mock.MagicMock()
+        mocked_account.AccountFileStorage.return_value = mocked_storage
+        mocked_storage.find_all.return_value = ["an account"]
+        mocked_det.return_value = (mock.MagicMock(), "foo")
+        acme_client = mock.MagicMock()
+        mocked_client.Client.return_value = acme_client
+        x = self._call_no_clientmock(
+            ["register", "--update-registration"])
+        # When registration change succeeds, the return value
+        # of register() is None
+        self.assertTrue(x[0] is None)
+        # and we got supposedly did update the registration from
+        # the server
+        self.assertTrue(
+            acme_client.acme.update_registration.called)
+        # and we saved the updated registration on disk
+        self.assertTrue(mocked_storage.save_regr.called)
+        self.assertTrue(
+            email in mock_utility().add_message.call_args[0][0])
 
 class DetermineAccountTest(unittest.TestCase):
     """Tests for certbot.cli._determine_account."""
