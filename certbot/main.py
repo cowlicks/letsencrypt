@@ -387,7 +387,7 @@ def register(config, unused_plugins):
 
     if config.deactivate:
         if len(accounts) == 0:
-            return "Could not find existing account to deactivate."
+            add_msg("Could not find existing account to deactivate.")
         else:
             yesno = zope.component.getUtility(interfaces.IDisplay).yesno
             prompt = ("Are you SURE you would like to irrevocably deactivate "
@@ -401,10 +401,9 @@ def register(config, unused_plugins):
                 acme_client = client.Client(config, acc, None, None, acme=acme)
                 acme_client.acme.deactivate(acc.regr)
                 add_msg("Account deactivated.")
-                return
             else:
                 add_msg("Deactivation aborted.")
-                return
+        return
 
     # registering a new account
     if not config.update_registration:

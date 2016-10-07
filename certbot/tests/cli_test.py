@@ -1074,11 +1074,9 @@ class CLITest(unittest.TestCase):  # pylint: disable=too-many-public-methods
     @mock.patch('certbot.main._determine_account')
     @mock.patch('certbot.main.account')
     @mock.patch('certbot.main.client')
-    @mock.patch('certbot.main.display_ops.get_email')
     @mock.patch('certbot.main.zope.component.getUtility')
-    def test_registration_deactivate(self, mock_utility, mock_email,
-                                     mocked_client, mocked_account,
-                                     mocked_det):
+    def test_registration_deactivate(self, mock_utility, mocked_client,
+                                     mocked_account, mocked_det):
         mocked_storage = mock.MagicMock()
         mocked_account.AccountFileStorage.return_value = mocked_storage
         mocked_storage.find_all.return_value = ["an account"]
