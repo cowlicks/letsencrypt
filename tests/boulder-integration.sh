@@ -38,11 +38,11 @@ common() {
 python -m SimpleHTTPServer $http_01_port &
 python_server_pid=$!
 common --domains le1.wtf --preferred-challenges tls-sni-01 auth
-kill $python_server_pid
+kill $python_server_pid || true
 python -m SimpleHTTPServer $tls_sni_01_port &
 python_server_pid=$!
 common --domains le2.wtf --preferred-challenges http-01 run
-kill $python_server_pid
+kill $python_server_pid || true
 
 common -a manual -d le.wtf auth --rsa-key-size 4096
 
