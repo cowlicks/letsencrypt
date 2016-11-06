@@ -1083,21 +1083,31 @@ class CLITest(unittest.TestCase):  # pylint: disable=too-many-public-methods
         mocked_det.return_value = (mock.MagicMock(), "foo")
         acme_client = mock.MagicMock()
         mocked_client.Client.return_value = acme_client
+
         x = self._call_no_clientmock(["register", "--deactivate"])
         self.assertTrue(x[0] is None)
         self.assertTrue(acme_client.acme.deactivate.called)
         m = "Account deactivated."
         self.assertTrue(m in mock_utility().add_message.call_args[0][0])
 
-    def test_conflicting_args(self):
-        args = ['renew', '--dialog', '--text']
-        self.assertRaises(errors.Error, self._call, args)
+    @mock.patch('certbot.main._determine_account')
+    @mock.patch('certbot.main.account')
+    @mock.patch('certbot.main.client')
+    @mock.patch('certbot.main.zope.component.getUtility')
+    def test_registration_deactivate_no_account(self, mock_utility,
+                                                mocked_client, mocked_account,
+                                                mocked_det):
+        mocked_storage = mock.MagicMock()
+        mocked_account.AccountFileStorage.return_value = mocked_storage
+        mocked_det.return_value = (mock.MagicMock(), "foo")
+        acme_client = mock.MagicMock()
+        mocked_client.Client.return_value = acme_client
 
-    def test_text_mode_when_verbose(self):
-        parse = self._get_argument_parser()
-        short_args = ['-v']
-        namespace = parse(short_args)
-        self.assertTrue(namespace.text_mode)
+        x = self._call_no_clientmock(["register", "--deactivate"])
+        self.assertTrue(x[0] is None)
+        self.assertFalse(acme_client.acme.deactivate.called)
+        m = "Could not find existing account to deactivate"
+        self.assertTrue(m in mock_utility().add_message.call_args[0][0])
 
 
 class DetermineAccountTest(unittest.TestCase):
