@@ -9,7 +9,7 @@
 # Note: this script is called by Boulder integration test suite!
 
 . ./tests/integration/_common.sh
-export PATH="/usr/sbin:$PATH"  # /usr/sbin/nginx
+export PATH="$PATH:/usr/sbin"  # /usr/sbin/nginx
 
 export GOPATH="${GOPATH:-/tmp/go}"
 export PATH="$GOPATH/bin:$PATH"
@@ -38,11 +38,11 @@ common() {
 python -m SimpleHTTPServer $http_01_port &
 python_server_pid=$!
 common --domains le1.wtf --preferred-challenges tls-sni-01 auth
-kill $python_server_pid || true
+kill $python_server_pid
 python -m SimpleHTTPServer $tls_sni_01_port &
 python_server_pid=$!
 common --domains le2.wtf --preferred-challenges http-01 run
-kill $python_server_pid || true
+kill $python_server_pid
 
 common -a manual -d le.wtf auth --rsa-key-size 4096
 
