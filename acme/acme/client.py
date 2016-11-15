@@ -134,7 +134,7 @@ class Client(object):  # pylint: disable=too-many-instance-attributes
             raise errors.UnexpectedUpdate(regr)
         return updated_regr
 
-    def deactivate(self, regr):
+    def deactivate_registration(self, regr):
         """Deactivate registration.
 
         :param messages.RegistrationResource regr: The Registration Resource
