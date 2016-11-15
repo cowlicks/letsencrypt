@@ -711,9 +711,7 @@ def prepare_and_parse_args(plugins, args, detect_defaults=False):  # pylint: dis
              "should be updated, rather than registering a new account.")
     helpful.add(
         "register", "--deactivate", action="store_true",
-        help="Irrevocably deactivate your account. Certificates associated "
-             "with your account can still be revoked, but they can not be "
-             "renewed.")
+        help="Irrevocably deactivate your account.")
     helpful.add(None, "-m", "--email", help=config_help("email"))
     helpful.add(
         ["automation", "renew", "certonly", "run"],
