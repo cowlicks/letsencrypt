@@ -1086,7 +1086,7 @@ class CLITest(unittest.TestCase):  # pylint: disable=too-many-public-methods
 
         x = self._call_no_clientmock(["register", "--deactivate"])
         self.assertTrue(x[0] is None)
-        self.assertTrue(acme_client.acme.deactivate.called)
+        self.assertTrue(acme_client.acme.deactivate_registration.called)
         m = "Account deactivated."
         self.assertTrue(m in mock_utility().add_message.call_args[0][0])
 
@@ -1104,7 +1104,7 @@ class CLITest(unittest.TestCase):  # pylint: disable=too-many-public-methods
         x = self._call_no_clientmock(["register", "--deactivate"])
         m = "Could not find existing account to deactivate."
         self.assertTrue(x[0] == m)
-        self.assertFalse(acme_client.acme.deactivate.called)
+        self.assertFalse(acme_client.acme.deactivate_registration.called)
 
 
 class DetermineAccountTest(unittest.TestCase):
