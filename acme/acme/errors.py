@@ -22,10 +22,6 @@ class UnexpectedUpdate(ClientError):
     """Unexpected update error."""
 
 
-class DeactivationError(ClientError):
-    """Account Deactivation Error"""
-
-
 class NonceError(ClientError):
     """Server response nonce error."""
 
