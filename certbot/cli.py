@@ -64,7 +64,7 @@ cert. Major SUBCOMMANDS are:
   install              Install a previously obtained cert in a server
   renew                Renew previously obtained certs that are near expiry
   revoke               Revoke a previously obtained certificate
-  register             Perform tasks related to registering with the CA
+  account              Perform accont management tasks
   rollback             Rollback server configuration changes made during install
   config_changes       Show changes made to server config during installation
   update_symlinks      Update cert symlinks based on renewal config file
@@ -91,7 +91,7 @@ More detailed help:
                         the available topics are:
 
    all, automation, paths, security, testing, or any of the subcommands or
-   plugins (certonly, renew, install, register, nginx, apache, standalone,
+   plugins (certonly, renew, install, account, nginx, apache, standalone,
    webroot, etc.)
 """
 
@@ -319,11 +319,15 @@ class HelpfulArgumentParser(object):
     def __init__(self, args, plugins, detect_defaults=False):
         from certbot import main
         self.VERBS = {"auth": main.obtain_cert, "certonly": main.obtain_cert,
-                      "config_changes": main.config_changes, "run": main.run,
-                      "install": main.install, "plugins": main.plugins_cmd,
-                      "register": main.register, "renew": main.renew,
-                      "revoke": main.revoke, "rollback": main.rollback,
-                      "everything": main.run, "update_symlinks": main.update_symlinks}
+                      "config_changes": main.config_changes,
+                      "install": main.install,
+                      "plugins": main.plugins_cmd,
+                      "account": main.register, "register": main.register,
+                      "everything": main.run, "run": main.run,
+                      "renew": main.renew,
+                      "revoke": main.revoke,
+                      "rollback": main.rollback,
+                      "update_symlinks": main.update_symlinks}
 
         # List of topics for which additional help can be provided
         HELP_TOPICS = ["all", "security", "paths", "automation", "testing"] + list(self.VERBS)
@@ -466,6 +470,8 @@ class HelpfulArgumentParser(object):
                     verb = "certonly"
                 if verb == "everything":
                     verb = "run"
+                if verb == "register":
+                    verb = "account"
                 self.verb = verb
                 self.args.pop(i)
                 return
@@ -605,6 +611,8 @@ class HelpfulArgumentParser(object):
             chosen_topic = "certonly"
         if chosen_topic == "everything":
             chosen_topic = "run"
+        if chosen_topic == "register":
+            chosen_topic = "account"
         if chosen_topic == "all":
             return dict([(t, True) for t in self.help_topics])
         elif not chosen_topic:
@@ -695,7 +703,7 @@ def prepare_and_parse_args(plugins, args, detect_defaults=False):  # pylint: dis
              " if they are defined because they may be necessary to accurately simulate"
              " renewal. --renew-hook commands are not called.")
     helpful.add(
-        ["register", "automation"], "--register-unsafely-without-email", action="store_true",
+        ["account", "automation"], "--register-unsafely-without-email", action="store_true",
         help="Specifying this flag enables registering an account with no "
              "email address. This is strongly discouraged, because in the "
              "event of key loss or account compromise you will irrevocably "
@@ -705,12 +713,12 @@ def prepare_and_parse_args(plugins, args, detect_defaults=False):  # pylint: dis
              "affect you, and will be effective 14 days after posting an "
              "update to the web site.")
     helpful.add(
-        "register", "--update-registration", action="store_true",
-        help="With the register verb, indicates that details associated "
+        "account", "--update-registration", action="store_true",
+        help="With the account verb, indicates that details associated "
              "with an existing registration, such as the e-mail address, "
              "should be updated, rather than registering a new account.")
     helpful.add(
-        "register", "--deactivate", action="store_true",
+        "account", "--deactivate", action="store_true",
         help="Irrevocably deactivate your account.")
     helpful.add(None, "-m", "--email", help=config_help("email"))
     helpful.add(
